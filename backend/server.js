@@ -290,6 +290,11 @@ app.use('/api/elections', electionsRoutes);
 app.use('/api/votes', votesRoutes);
 
 app.get('/api/health', (req, res) => res.json({ ok: true }));
+app.use(express.static(path.join(__dirname, "../frontend")));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/index.html"));
+});
 
 // Email configuration test endpoint
 app.get('/api/test-email', async (req, res) => {
@@ -400,10 +405,8 @@ async function start() {
     console.log(`Test email config: http://localhost:${PORT}/api/test-email\n`);
   });
 }
-app.use(express.static(path.join(__dirname, "../frontend/build")));
-
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend-index.html"));
+  res.sendFile(path.join(__dirname, "../frontend/index.html"));
 });
 start().catch((err) => {
   console.error('Failed to start:', err);
