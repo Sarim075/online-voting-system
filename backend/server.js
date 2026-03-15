@@ -399,10 +399,10 @@ async function start() {
     console.log(`Test email config: http://localhost:${PORT}/api/test-email\n`);
   });
 }
-app.use(express.static("./frontend/build"));
+app.use(express.static(path.join(__dirname, "../frontend/build")));
 
 app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
+  res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
 });
 start().catch((err) => {
   console.error('Failed to start:', err);
