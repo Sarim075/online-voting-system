@@ -1,9 +1,6 @@
 // Load .env file - ensure it's loaded before anything else
 const path = require('path');
 const fs = require('fs');
-const path = require("path");
-
-app.use(express.static(path.join(__dirname, "../frontend")));
 
 // Try multiple possible .env locations (ONLY .env, NOT .env.example)
 const envPaths = [
@@ -282,6 +279,7 @@ const electionsRoutes = require('./routes/elections');
 const votesRoutes = require('./routes/votes');
 
 const app = express();
+app.use(express.static(path.join(__dirname, "../frontend")));
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:5173', credentials: true }));
@@ -404,8 +402,8 @@ async function start() {
 }
 app.use(express.static(path.join(__dirname, "../frontend/build")));
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend-index.html"));
 });
 start().catch((err) => {
   console.error('Failed to start:', err);
