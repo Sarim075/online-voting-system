@@ -40,11 +40,13 @@ app.get("/api/health", (req, res) => {
 
 const frontendPath = path.join(__dirname, "../frontend");
 
-app.use(express.static(frontendPath));
+if (require("fs").existsSync(frontendPath)) {
+  app.use(express.static(frontendPath));
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(frontendPath, "index.html"));
-});
+  app.get("/", (req, res) => {
+    res.sendFile(path.join(frontendPath, "index.html"));
+  });
+}
 
 /* -------------------- Email Test Route -------------------- */
 
@@ -55,9 +57,7 @@ app.get("/api/test-email", async (req, res) => {
 
     if (!smtpUser || !smtpPass) {
       return res.status(500).json({
-        error: "SMTP credentials missing",
-        SMTP_USER: smtpUser ? "SET" : "MISSING",
-        SMTP_PASS: smtpPass ? "SET" : "MISSING"
+        error: "SMTP credentials missing"
       });
     }
 
@@ -85,18 +85,18 @@ async function startServer() {
   try {
 
     await connectDB();
-    console.log("✅ MongoDB Connected");
+    console.log("MongoDB Connected");
 
     await initDb();
-    console.log("✅ Database Initialized");
+    console.log("Database Initialized");
 
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`🌐 Health check: /api/health`);
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server running on port ${PORT}`);
+      console.log(`Health check: /api/health`);
     });
 
   } catch (err) {
-    console.error("❌ Failed to start server:", err);
+    console.error("Failed to start server:", err);
     process.exit(1);
   }
 }
