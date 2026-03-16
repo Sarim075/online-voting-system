@@ -5,7 +5,6 @@ const path = require("path");
 const express = require("express");
 const cors = require("cors");
 
-const { connectDB } = require("./db/connection");
 const { initDb } = require("./db/schema");
 
 const authRoutes = require("./routes/auth");
@@ -15,7 +14,7 @@ const votesRoutes = require("./routes/votes");
 const app = express();
 
 // Azure requires using this PORT
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 /* -------------------- Middleware -------------------- */
 
@@ -32,6 +31,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/elections", electionsRoutes);
 app.use("/api/votes", votesRoutes);
 
+// Health check endpoint (used by Azure)
 app.get("/api/health", (req, res) => {
   res.json({ status: "OK", message: "Voting API running" });
 });
@@ -78,20 +78,15 @@ app.get("/api/test-email", async (req, res) => {
     });
   }
 });
-app.get('/health', (req, res) => {
-  res.status(200).send("OK");
-});
 
 /* -------------------- Start Server -------------------- */
 
 async function startServer() {
   try {
 
-    await connectDB();
-    console.log("✅ MongoDB Connected");
-
+    // Initialize SQLite database
     await initDb();
-    console.log("✅ Database Initialized");
+    console.log("✅ SQLite Database Initialized");
 
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
