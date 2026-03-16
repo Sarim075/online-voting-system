@@ -78,6 +78,9 @@ app.get("/api/test-email", async (req, res) => {
     });
   }
 });
+app.get('/health', (req, res) => {
+  res.status(200).send("OK");
+});
 
 /* -------------------- Start Server -------------------- */
 
